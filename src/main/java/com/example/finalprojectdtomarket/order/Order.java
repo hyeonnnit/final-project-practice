@@ -23,11 +23,11 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Product product;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private Product product;
 //
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Cart cart;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private Cart cart;
 
     @Column
     private String address;     // 배송지

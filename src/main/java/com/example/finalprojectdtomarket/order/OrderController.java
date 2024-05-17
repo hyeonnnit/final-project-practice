@@ -1,5 +1,6 @@
 package com.example.finalprojectdtomarket.order;
 
+import com.example.finalprojectdtomarket.user.User;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -26,8 +27,11 @@ public class OrderController {
 
     // 주문하기
     @PostMapping("/order/save")
-    public String orderSave() {
-        return "redirect:/order-list";
+    public String orderSave(OrderRequest.SaveDTO saveDTO) {
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        OrderResponse.OrderSaveDTO order = orderService.saveOrder(saveDTO,sessionUser);
+        System.out.println("test::" + order);
+        return "redirect:/order/save-form";
     }
 
     // 삭제하기

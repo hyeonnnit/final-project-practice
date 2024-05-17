@@ -18,17 +18,18 @@ public class CartService {
     private final ProductJPARepository productJPARepository;
 
     @Transactional
-    public void updateCart(List<CartRequest.UpdateDTO> updateDTOList) {
+    public List<Cart> updateCart(List<CartRequest.UpdateDTO> updateDTOList) {
         List<Cart> cartList = new ArrayList<>();
         for (CartRequest.UpdateDTO reqDTO : updateDTOList) {
             Cart cart = cartJPARepository.findById(reqDTO.getCartId())
-                    .orElseThrow(()->new Exception404("상품이 존재하지 않습니다."));
+                    .orElseThrow(() -> new Exception404("상품이 존재하지 않습니다"));
             cart.setId(reqDTO.getCartId());
             cart.setOrderQty(reqDTO.getOrderQty());
             cart.setIsChecked(true);
             cartList.add(cart);
             cartJPARepository.delete(cart);
         }
+        return cartList;
     }
     //cart-save
     @Transactional
