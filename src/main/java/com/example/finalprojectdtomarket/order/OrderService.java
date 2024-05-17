@@ -3,6 +3,7 @@ package com.example.finalprojectdtomarket.order;
 import com.example.finalprojectdtomarket.cart.Cart;
 import com.example.finalprojectdtomarket.cart.CartJPARepository;
 import com.example.finalprojectdtomarket.cart.CartResponse;
+import com.example.finalprojectdtomarket.user.User;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,11 @@ public class OrderService {
 //        // 조회된 주문 리스트를 DTO로 변환
 //        return cartList;
 //    }
-
+    @Transactional
+    public OrderResponse.OrderSaveDTO saveOrder(OrderRequest.SaveDTO saveDTO, User user) {
+        Order order = orderJPARepository.save(saveDTO.toEntity(user));
+        return new OrderResponse.OrderSaveDTO(order);
+    }
     @Transactional
     public List<CartResponse.ListDTO> findByUserIdAndChecked(Integer userId, Boolean isChecked) {
         // 저장된 리스트를 사용자 ID와 상태를 기준으로 조회

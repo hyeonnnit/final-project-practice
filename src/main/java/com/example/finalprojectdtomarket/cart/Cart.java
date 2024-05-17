@@ -31,6 +31,7 @@ public class Cart {
     @Column(nullable = false)
     private Integer orderQty;   // 주문 수량
 
+    // TODO: 삭제하기
     @Column
     private Boolean isChecked;  //장바구니 선택 됐나요? 0 -> false, 1 -> true
 
