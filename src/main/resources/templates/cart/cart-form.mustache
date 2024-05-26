@@ -1,6 +1,4 @@
 {{> layout/header}}
-<style>
-</style>
 
 <div class="container sub-page" style="text-align: center">
     <div class="cart-w d-flex">
@@ -18,6 +16,9 @@
                 {{#cartList}}
                     <tr class="cart-table my-cart-list" id="cart-{{id}}">
                         <td>{{indexNum}}</td>
+                        <input type="hidden" name="cartId" value="{{id}}">
+                        <input type="hidden" name="productId" value="{{productId}}">
+                        <span class="notVisible">{{id}}</span>
                         <td>
                             <div style="width:150px; margin:0 auto;">
                                 <img src="/upload/{{img}}" alt="Product Image"
@@ -32,20 +33,21 @@
                                  style="width: 100px; text-align: center; margin:0 auto">
                                 <button type="button" class="decrease-btn" aria-label="수량내리기" style="">-
                                 </button>
-                                <input type="text" class="quantity orderQty orderQty-change" name="orderQty"
+                                <input type="text" class="quantity orderQty orderQty-change orderQty-class" id="orderQty"
+                                       name="orderQty" data-order-qty="{{orderQty}}"
                                        value="{{orderQty}}"
                                        style="text-align: center; ">
                                 <button type="button" class="increase-btn" aria-label="수량올리기">+</button>
                             </div>
                         </td>
 
-                        <td class="price-class">{{price}}</td>
+                        <td class="price-class" id="price-item" data-price="{{price}}">{{price}}</td>
 
-                        <td class="sum-class">{{sum}}</td>
+                        <td class="sum-class" id="sum-item" data-sum="{{sum}}">{{sum}}</td>
 
                         <td>
-                            <label for="itemCheck-id"></label><input class="form-check-input product-checkbox item-check" type="checkbox" name="itemCheck"
-                                                                     id="itemCheck-id" style="width:20px !important; margin: 0 auto">
+                            <input class="form-check-input product-checkbox item-check" type="checkbox" name="itemCheck"
+                                   id="itemCheck-id" value="{{sum}}" checked style="width:20px !important; margin: 0 auto">
                         </td>
                     </tr>
                 {{/cartList}}
@@ -67,108 +69,58 @@
                 </ul>
             </div>
             <!-- 총합계 계산하는 것 -->
-            <form action="/order/save" method="post">
-                <button type="button" class="btn btn-mint" id="purchaseButton" style="width:300px">주문하기</button>
-            </form>
+
+            <button type="button" class="btn btn-mint" id="purchaseButton" style="width:300px">주문하기</button>
         </div>
     </div>
 </div>
 
+
 <script>
+    <!--    천단위 표시 재사용 해야할 함수 -->
+    function numberWithCommas(total) {
+        return total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    //재사용 함수
+    function updateTotalSum() {
+        // 체크박스에서 값 들어오는 jQuery
+        let total = 0;
+        $(".item-check:checked").each(function () {
+            // let price = $(this).val();
+            // console.log(price);
+            total = total + parseInt($(this).val());
+            // console.log(total);
+        });
+        $("#totalSum").text(numberWithCommas(total));
+    }
+
+    //change 이벤트가 updateTotalSum 함수 내에 있으면 change 이벤트가 일어나야지만 실행이 되어서 빼줬음
+    $(".item-check").change(function () {
+        updateTotalSum();
+    });
+
+    //장바구니에 딱 들어왔을 때부터 총액 계산되어있게 하려고 분리함
+    updateTotalSum()
+
+    // 장바구니에 상품가격 콤마 찍기
+    $(".price-class").each(function () {
+        let price = $(this).data("price");
+        console.log(price);
+        $(this).text(numberWithCommas(price));
+    });
+
+
+    //장바구니에 구매금액(총액) 콤마 찍기
+    $(".sum-class").each(function () {
+        let sum = $(this).data("sum");
+        console.log(sum);
+        $(this).text(numberWithCommas(sum));
+    });
+
 
 </script>
 
-<script>
-    // $(document).ready(function() {
-    //     let cartList = [];
-    //
-    //     function parsePrice(priceString) {
-    //         return parseInt(priceString.replace(/,/g, ''));
-    //     }
-    //     // 총합을 계산하고 화면에 표시하는 함수
-    //     function calculateAndDisplayTotal() {
-    //         let total = 0;
-    //         $(".my-cart-list").each(function() {
-    //             let $row = $(this);
-    //             let $checkBox = $row.find(".item-check");
-    //             if($checkBox.is(":checked")){
-    //                 let price = parsePrice($row.find(".price-class").text());
-    //                 let orderQty = parseInt($row.find(".orderQty").val());
-    //                 let itemTotal = price * orderQty; // 개별 상품의 총 금액 계산
-    //                 total += itemTotal;
-    //                 $row.find(".sum-class").text(itemTotal.toLocaleString()); // 개별 상품 금액 화면에 표시
-    //             } else {
-    //                 $row.find(".sum-class").text(''); // 체크 해제 시 금액 지우기
-    //             }
-    //         });
-    //
-    //         $(".totalSum").text(total.toLocaleString());
-    //     }
-    //
-    //     // 체크박스 클릭 시 총합 계산 로직 실행
-    //     $(document).on("click", ".my-cart-list .form-check-input", calculateAndDisplayTotal);
-    //
-    //     // 수량 변경 이벤트 (증가, 감소, 직접 입력)에 대한 총합 재계산
-    //     function handleQuantityChange() {
-    //         let $row = $(this).closest(".my-cart-list");
-    //         let $checkBox = $row.find(".item-check");
-    //         if($checkBox.is(":checked")) {
-    //             calculateAndDisplayTotal();
-    //         }
-    //     }
-    //
-    //     $(".increase-btn, .decrease-btn, .quantity").on("click input", handleQuantityChange);
-    //
-    //     // 구매하기 버튼 클릭 이벤트
-    //     $("#purchaseButton").on("click", function(e) {
-    //         e.preventDefault();
-    //
-    //         cartList = []; // 리스트 초기화
-    //
-    //         $(".my-cart-list").each(function() {
-    //             let $row = $(this);
-    //             let $checkBox = $row.find("div.form-check > input[type='checkbox']");
-    //             if($checkBox.is(":checked")){
-    //                 let cartId = $checkBox.val();
-    //                 let orderQty = $row.find(".orderQty > input").val();
-    //
-    //                 let checkedCart = {
-    //                     cartId: cartId,
-    //                     orderQty: orderQty,
-    //                     checkedBox: true
-    //                 };
-    //
-    //                 cartList.push(checkedCart);
-    //             }
-    //         });
-    //
-    //         calculateAndDisplayTotal(); // 최종 확인용 총합계 다시 계산
-    //         alert("주문이 완료되었습니다. 총 합계: " + $(".totalSum").text() + "원");
-    //
-    //         // AJAX 요청으로 선택된 상품을 서버로 전송
-    //         $.ajax({
-    //             url: '/cart/update',
-    //             data: JSON.stringify(cartList),
-    //             contentType: 'application/json; charset=utf-8',
-    //             type: 'POST'
-    //         }).done((res) => {
-    //             alert(`${res}`);
-    //             let form = $('<form>', {
-    //                 'method': 'POST',
-    //                 'action': '/order/save'
-    //             });
-    //             $('body').append(form);
-    //             form.submit();
-    //         }).fail((res) => {
-    //             // 오류 처리
-    //         });
-    //     });
-    // });
-
-</script>
-
-<!--<script src="/js/sum-calculate.js"></script>-->
-<!--<script src="/js/list.js"></script>-->
-<!--<script src="/js/check-all.js"></script>-->
+<script src="/js/cart-check.js"></script>
 
 {{> layout/footer}}

@@ -1,5 +1,21 @@
 {{> layout/header}}
 
+<style>
+    .panel {
+        display: none;
+    }
+
+    .panel-title {
+        display: none;
+    }
+
+    .flip:hover {
+        cursor: pointer;
+    }
+
+
+</style>
+
 <div class="container pt-5" style="text-align: center">
     <br>
     <br><br><br><br>
@@ -10,6 +26,7 @@
                 <tr>
                     <th>주문번호</th>
                     <th>상품명</th>
+                    <th>주문자명</th>
                     <th>결제금액</th>
                     <th>배송주소</th>
                     <th>주문날짜</th>
@@ -22,6 +39,9 @@
                         <td>{{orderNumb}}</td>
                         <td>
                             {{pName}}
+                        </td>
+                        <td>
+                            {{personName}}
                         </td>
                         <td class="price-class" data-price="{{sum}}">
                             {{sum}}
@@ -43,37 +63,38 @@
                         </td>
                     </tr>
 
-                    <tr class="panel-title">
-                        <th></th>
-                        <th>상품명</th>
-                        <th>상품금액</th>
-                        <th>주문수량</th>
-                        <th>합계</th>
-                        <th>주문상태</th>
-                        <th></th>
+
+                <tr class="panel-title">
+                    <th></th>
+                    <th>상품명</th>
+                    <th>상품금액</th>
+                    <th>주문수량</th>
+                    <th>합계</th>
+                    <th>주문상태</th>
+                    <th></th>
+                </tr>
+
+                <!--                순회 여러번 도는 애들 -->
+                {{#items}}
+
+                    <tr class="panel" data-order-id="{{orderId}}" >
+                        <td></td>
+                        <td>
+                            <div style="width:150px; margin:0 auto;">
+                                <img src="/upload/{{img}}" alt="Product Image"
+                                     style="max-width: 100%; max-height: 100%;">
+                            </div>
+                        </td>
+
+                        <td>{{pName}}</td>
+                        <td class="price-class" data-price="{{price}}">{{price}}</td>
+                        <td>{{orderQty}}</td>
+                        <td class="price-class" data-price="{{sum}}">{{sum}}</td>
+                        <td style="{{classChange}}">{{status}}</td>
+                        <td style="color: blue">재고현황<br> ({{qty}})</td>
+
                     </tr>
-
-                    <!--                순회 여러번 도는 애들 -->
-                    {{#items}}
-
-                        <tr class="panel" data-order-id="{{orderId}}" >
-
-                            <td>
-                                <div style="width:150px; margin:0 auto;">
-                                    <img src="/upload/{{img}}" alt="Product Image"
-                                         style="max-width: 100%; max-height: 100%;">
-                                </div>
-                            </td>
-
-                            <td>{{pName}}</td>
-                            <td class="price-class" data-price="{{price}}">{{price}}</td>
-                            <td>{{orderQty}}</td>
-                            <td class="price-class" data-price="{{sum}}">{{sum}}</td>
-                            <td style="{{classChange}}">{{status}}</td>
-                            <td></td>
-
-                        </tr>
-                    {{/items}}
+                {{/items}}
 
                 {{/orderItemList}}
 
@@ -93,7 +114,6 @@
 <br><br><br>
 
 <script>
-
 
     <!--    천단위 표시 재사용 해야할 함수 -->
     function numberWithCommas(num) {
@@ -128,8 +148,6 @@
         }, 200); // slideUp 애니메이션이 완료될 시간을 고려하여 적당한 딜레이를 설정
     });
 
-
-
     // 값 받기
     let requestBody = [];
 
@@ -162,7 +180,7 @@
 
         }).done((res) => {
             alert("취소가 완료되었습니다!");
-            location.href = "/order-list"
+            location.href = "/admin-list"
 
         }).fail((res) => {
             alert("통신 오류")
@@ -170,7 +188,7 @@
 
     }
 
-</script>
 
+</script>
 
 {{> layout/footer}}
