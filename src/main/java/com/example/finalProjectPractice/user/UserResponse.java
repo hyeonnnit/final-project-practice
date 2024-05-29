@@ -30,6 +30,7 @@ public class UserResponse {
         private String email;
         private Date birth;
         private Integer role;
+        private UserGender gender;
 
         public JoinDTO(User user) {
             this.password = user.getPassword();
@@ -37,6 +38,7 @@ public class UserResponse {
             this.phone = user.getPhone();
             this.email = user.getEmail();
             this.birth = user.getBirth();
+            this.gender = user.getGender();
             this.role = user.getRole();
         }
     }

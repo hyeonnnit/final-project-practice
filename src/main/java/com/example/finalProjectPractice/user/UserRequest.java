@@ -30,6 +30,7 @@ public class UserRequest {
         private String email;
         private String personName;
         private Date birth;
+        private UserGender gender;
         private Integer role;
         public User toEntity(){
             return User.builder()
@@ -38,6 +39,7 @@ public class UserRequest {
                     .phone(phone)
                     .birth(birth)
                     .email(email)
+                    .gender(gender)
                     .personName(personName)
                     .role(role)
                     .build();

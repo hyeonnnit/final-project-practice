@@ -28,6 +28,9 @@ public class User {
     private String personName;  //성함
 
     @Column(nullable = false)
+    private UserGender gender;
+
+    @Column(nullable = false)
     private String phone;     //폰번호
 
     @Column(nullable = false)
@@ -43,12 +46,13 @@ public class User {
     private Timestamp createdAt;
 
     @Builder
-    public User(Integer id, String password, String username, String phone, String email, Date birth, Integer role, String personName, Timestamp createdAt) {
+    public User(Integer id, String password, String username, UserGender gender, String phone, String email, Date birth, Integer role, String personName, Timestamp createdAt) {
         this.id = id;
         this.password = password;
         this.username = username;
         this.phone = phone;
         this.email = email;
+        this.gender = gender;
         this.birth = birth;
         this.role = role;
         this.personName = personName;
